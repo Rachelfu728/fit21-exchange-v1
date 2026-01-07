@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fit21｜回傳不缺席・轉盤開獎</title>
+  <style>
+    body{font-family:system-ui,-apple-system,"Segoe UI",Arial,"Noto Sans CJK TC",sans-serif;margin:0;padding:24px;background:#f7f8fa;display:flex;justify-content:center;}
+    .wrap{max-width:520px;width:100%;text-align:center;}
+    .card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);}
+    h1{font-size:20px;margin:8px 0 4px;}
+    p{margin:0 0 16px;color:#555;line-height:1.5;}
+    canvas{width:100%;height:auto;max-width:420px;}
+    .btn{margin-top:14px;width:100%;border:none;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:700;background:#1f7a3a;color:#fff;cursor:pointer;}
+    .btn:disabled{opacity:.5;cursor:not-allowed;}
+    .result{margin-top:14px;padding:12px 14px;background:#f1f7f2;border-radius:12px;color:#164b26;font-weight:700;min-height:44px;display:flex;align-items:center;justify-content:center;white-space:pre-line;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Fit21｜回傳不缺席・轉盤開獎</h1>
+      <p>連續 7 天回傳餐單 ✅ 你值得一個小鼓勵。<br>按下去，轉一下就知道今天的幸運禮物 🎁</p>
+
+      <canvas id="wheel" width="800" height="800"></canvas>
+
+      <button id="spinBtn" class="btn">立即轉輪盤</button>
+      <div id="result" class="result">準備好了就按「立即轉輪盤」</div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
