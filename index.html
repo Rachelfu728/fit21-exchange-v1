@@ -665,6 +665,10 @@
 
       countEl.innerHTML = `顯示 <b>${rows.length}</b> 筆`;
       renderChips(group, subtype, q);
+      countEl.innerHTML = `顯示 <b>${rows.length}</b> 筆`;
+renderChips(group, subtype, q);
+renderCards(rows, group);   // ← 就加這行！
+
     }
 
     // init
