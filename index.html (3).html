@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>衛福部食物代換表｜查詢工具（熟重版）</title>
+  
+
+  <meta name="theme-color" content="#d0021b">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+<style>
+    :root {
+      --bg: #ffffff;
+      --text: #111;
+      --muted: #666;
+      --border: #e6e6e6;
+      --chip: #f6f6f6;
+      --shadow: 0 8px 24px rgba(0,0,0,.06);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 16px 60px;
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 6px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .panel {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: #fff;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+    label {
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    select, input {
+      padding: 10px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      min-width: 200px;
+      outline: none;
+    }
+    input { min-width: 260px; flex: 1; }
+    .chips {
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .chip {
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--chip);
+      color: #333;
+    }
+    .meta {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    thead th {
+      font-size: 12px;
+      text-align: left;
+      padding: 10px;
+      color: #333;
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 126px;
+      z-index: 5;
+    }
+    tbody td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    tbody tr:hover { background: #fcfcfc; }
+    .muted { color: var(--muted); }
+    .right { text-align:right; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .legend {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .btn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn:hover { background:#fafafa; }
+    @media (max-width: 640px) {
+      thead th { top: 180px; }
+      select { min-width: 160px; }
+      input { min-width: 160px; }
+    }
+  
+    .watermark {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.9);
+      color: #b00020;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      z-index: 999;
+      pointer-events: none;
+    }
+
+  
+    .tableWrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 12px; }
+    .btnToggle[aria-pressed="true"] { border-color: #d0021b; box-shadow: 0 0 0 3px rgba(208,2,27,.12); }
+    /* Cards view */
+    .cardsGrid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .cardItem {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+    .cardTop { display:flex; gap:10px; justify-content: space-between; align-items:flex-start; }
+    .cardName { font-weight: 800; font-size: 15px; line-height: 1.2; }
+    .cardKcal { font-weight: 800; font-size: 14px; color: #b00020; white-space: nowrap; }
+    .cardMeta { margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .badge { display:inline-block; padding: 2px 8px; border:1px solid var(--border); border-radius:999px; font-size: 12px; background: var(--chip); margin-right: 6px; margin-top: 6px; }
+    @media (max-width: 640px) {
+      body { font-size: 16px; }
+      .wrap { padding: 14px 12px 50px; }
+      select, input { min-width: 150px; }
+      input { width: 100%; }
+      .btn { padding: 12px 14px; }
+      thead th { top: 210px; }
+      tbody td { font-size: 15px; }
+    }
+
+  
+    /* --- UI 美化（Fit21）--- */
+    :root{
+      --accent:#d0021b;
+      --accent2: rgba(208,2,27,.12);
+      --bg1:#ffffff;
+      --bg2:#faf7f8;
+    }
+    body{
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(208,2,27,.10), transparent 60%),
+                  radial-gradient(900px 500px at 90% 0%, rgba(208,2,27,.06), transparent 55%),
+                  linear-gradient(180deg, var(--bg2), var(--bg1));
+    }
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.78);
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap{ max-width: 1020px; }
+    h1{
+      letter-spacing: .5px;
+    }
+    .panel{
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    .btn{
+      border-radius: 14px;
+      font-weight: 700;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px); }
+    .btnToggle[aria-pressed="true"]{
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 8px 18px rgba(208,2,27,.18);
+    }
+    .chip{
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-weight: 700;
+    }
+    .chip:hover{ border-color: var(--accent); }
+    input, select{
+      border-radius: 14px;
+      padding: 12px 12px;
+    }
+    table{
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    thead th{
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .watermark{
+      border-color: rgba(208,2,27,.35);
+      background: rgba(255,255,255,.92);
+    }
+    @media (max-width: 640px){
+      header{ border-bottom: 0; }
+      .panel{ box-shadow: 0 10px 26px rgba(0,0,0,.08); }
+      .btn{ width: auto; }
+      .chip{ padding: 9px 12px; }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>衛福部食物代換表｜查詢工具（熟重優先）</h1>
+      <div style="display:flex; gap:12px; align-items:center; margin-top:10px; flex-wrap:wrap;">
+        <!-- Fit21 Logo (inline SVG, no external file needed) -->
+        <div aria-label="Fit21 logo" title="Fit21" style="display:flex; align-items:center; gap:10px;">
+          <svg width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Fit21" style="display:block;">
+            <circle cx="22" cy="22" r="19" fill="none" stroke="#d0021b" stroke-width="3"></circle>
+            <text x="22" y="27" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif"
+                  font-size="16" font-weight="700" fill="#d0021b">Fit21</text>
+          </svg>
+          <div style="line-height:1.1;">
+            <div style="font-weight:700; font-size:14px;">Fit21</div>
+            <div style="font-size:12px; color:var(--muted);">內部工具</div>
+          </div>
+        </div>
+
+        <!-- Confidential notice -->
+        <div style="
+          margin-left:auto;
+          padding:8px 12px;
+          border:1px dashed #d0021b;
+          border-radius:12px;
+          background: rgba(208, 2, 27, 0.06);
+          font-weight:700;
+          font-size:13px;
+          color:#b00020;">
+          內部培訓資料｜勿外傳
+        </div>
+      </div>
+
+      <div class="sub">
+        這是提供「夥伴查詢」用的離線網頁：選分類 → 搜尋食物 → 直接看到每份熱量與份量（豆魚蛋肉以「熟重」優先顯示）。
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <div>
+            <label>分類</label>
+            <select id="group"></select>
+          </div>
+          <div id="subtypeBox" style="display:none;">
+            <label>子分類</label>
+            <select id="subtype"></select>
+          </div>
+          <div>
+            <label>搜尋（食物名稱關鍵字）</label>
+            <input id="q" placeholder="例如：雞、豆腐、牛奶、香蕉、地瓜、花生..." />
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button class="btn" id="clearBtn">清空搜尋</button>
+          </div>
+        </div>
+
+        
+        <div class="row" style="margin-top:10px; align-items:center;">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="muted" style="font-size:12px;">顯示方式</span>
+            <button class="btn btnToggle" id="viewTableBtn" type="button" aria-pressed="false">表格</button>
+            <button class="btn btnToggle" id="viewCardsBtn" type="button" aria-pressed="false">卡片（手機推薦）</button>
+          </div>
+          <div class="muted" style="margin-left:auto; font-size:12px;">
+            小提示：手機看卡片更舒服；電腦看表格更快。
+          </div>
+        </div>
+
+        <div class="chips" id="chips"></div>
+
+        <div class="meta">
+          <div id="count"></div>
+          <div class="muted">資料來源：你提供的「食物代換表 PDF」整理而成</div>
+        </div>
+
+        <div class="legend">
+          註記小圖例（若原表有標示才會顯示）：<br/>
+          <span class="mono">＊</span> / <span class="mono">△</span> / <span class="mono">◎</span>：依原表的提示符號保留；若出現 <span class="mono">(+…)</span> 代表原表寫有額外成分提醒（例如含油/含碳水）。
+        </div>
+
+        <div class="tableWrap" id="tableWrap"><div class="legend" style="margin-top:8px;">小提示：搜尋支援同義字，例如「酪梨」也會對應「鱷梨／牛油果」。</div>
+        <table>
+          <thead>
+            <tr id="theadRow"></tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table></div>
+
+        <div id="cardsWrap" style="display:none; margin-top:12px;"></div>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    const DATA = [{"group": "乳品類", "name": "低脂奶", "exchange": 1, "kcal": 120, "subtype": "低脂", "portion": "1杯", "unit": "240毫升"}, {"group": "乳品類", "name": "低脂奶粉", "exchange": 1, "kcal": 120, "subtype": "低脂", "portion": "3湯匙", "unit": "25公克"}, {"group": "乳品類", "name": "優格(無糖)", "exchange": 1, "kcal": 120, "subtype": "低脂", "portion": "3/4杯", "unit": "210公克"}, {"group": "乳品類", "name": "優酪乳(無糖)", "exchange": 1, "kcal": 120, "subtype": "低脂", "portion": "1杯", "unit": "240毫升"}, {"group": "乳品類", "name": "乳酪絲", "exchange": 1, "kcal": 150, "subtype": "全脂", "note": "＊註記", "unit": "35公克"}, {"group": "乳品類", "name": "全脂奶", "exchange": 1, "kcal": 150, "subtype": "全脂", "portion": "1杯", "unit": "240毫升"}, {"group": "乳品類", "name": "全脂奶粉", "exchange": 1, "kcal": 150, "subtype": "全脂", "portion": "4湯匙", "unit": "30公克"}, {"group": "乳品類", "name": "蒸發奶", "exchange": 1, "kcal": 150, "subtype": "全脂", "portion": "1/2杯", "unit": "120毫升"}, {"group": "乳品類", "name": "起司片", "exchange": 1, "kcal": 150, "subtype": "全脂", "portion": "2片", "note": "＊註記", "unit": "45公克"}, {"group": "乳品類", "name": "脫脂奶", "exchange": 1, "kcal": 80, "subtype": "脫脂", "portion": "1杯", "unit": "240毫升"}, {"group": "乳品類", "name": "脫脂奶粉", "exchange": 1, "kcal": 80, "subtype": "脫脂", "portion": "2.5湯匙", "unit": "20公克"}, {"group": "全榖雜糧類", "name": "油條", "exchange": 1, "kcal": 70, "raw_g": 40, "portion": "2/3根", "note": "△；+3茶匙油", "unit": "g"}, {"group": "全榖雜糧類", "name": "燒餅", "exchange": 1, "kcal": 70, "raw_g": 20, "portion": "1/4個", "note": "△；+1/2茶匙油", "unit": "g"}, {"group": "全榖雜糧類", "name": "甜不辣", "exchange": 1, "kcal": 70, "raw_g": 70, "note": "◎", "unit": "g"}, {"group": "全榖雜糧類", "name": "山藥", "exchange": 1, "kcal": 70, "section": "根莖類", "raw_g": 80, "portion": "1塊", "unit": "g"}, {"group": "全榖雜糧類", "name": "芋頭", "exchange": 1, "kcal": 70, "section": "根莖類", "raw_g": 55, "portion": "1/5個(中)", "note": "滾刀塊3-4塊", "unit": "g"}, {"group": "全榖雜糧類", "name": "荸薺", "exchange": 1, "kcal": 70, "section": "根莖類", "raw_g": 100, "portion": "8粒", "unit": "g"}, {"group": "全榖雜糧類", "name": "蓮藕", "exchange": 1, "kcal": 70, "section": "根莖類", "raw_g": 100, "unit": "g"}, {"group": "全榖雜糧類", "name": "蕃薯", "exchange": 1, "kcal": 70, "section": "根莖類", "raw_g": 55, "portion": "1/2個(小)", "note": "4個/斤", "unit": "g"}, {"group": "全榖雜糧類", "name": "馬鈴薯", "exchange": 1, "kcal": 70, "section": "根莖類", "raw_g": 90, "portion": "1/2個(中)", "note": "3個/斤", "unit": "g"}, {"group": "全榖雜糧類", "name": "小湯圓", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 30, "portion": "約10粒", "note": "無餡", "unit": "g"}, {"group": "全榖雜糧類", "name": "白年糕", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 30, "unit": "g"}, {"group": "全榖雜糧類", "name": "米、黑米、小米、糯米等", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 20, "portion": "1/8杯(米杯)", "unit": "g"}, {"group": "全榖雜糧類", "name": "粥", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 125, "portion": "1/2碗", "note": "稠", "unit": "g"}, {"group": "全榖雜糧類", "name": "糙米、什穀米、胚芽米", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 20, "portion": "1/8杯(米杯)", "unit": "g"}, {"group": "全榖雜糧類", "name": "芋頭糕", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 60, "unit": "g"}, {"group": "全榖雜糧類", "name": "蘿蔔糕 6x8x1.5 公分", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 50, "portion": "1塊", "unit": "g"}, {"group": "全榖雜糧類", "name": "豬血糕", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 35, "unit": "g"}, {"group": "全榖雜糧類", "name": "飯", "exchange": 1, "kcal": 70, "section": "米類", "raw_g": 40, "portion": "1/4碗", "unit": "g"}, {"group": "全榖雜糧類", "name": "南瓜", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 85, "unit": "g"}, {"group": "全榖雜糧類", "name": "栗子", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 20, "portion": "3粒 (大)", "note": "乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "爆米花", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 15, "portion": "1杯", "note": "不加奶油", "unit": "g"}, {"group": "全榖雜糧類", "name": "玉米或玉米粒", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 85, "portion": "2/3根", "unit": "g"}, {"group": "全榖雜糧類", "name": "皇帝豆", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 65, "note": "◎", "unit": "g"}, {"group": "全榖雜糧類", "name": "菱角", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 60, "portion": "8粒", "unit": "g"}, {"group": "全榖雜糧類", "name": "蓮子", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 25, "portion": "40粒", "note": "◎；乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "薏仁", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 20, "portion": "1 1/2湯匙", "note": "◎", "unit": "g"}, {"group": "全榖雜糧類", "name": "豌豆仁", "exchange": 1, "kcal": 70, "section": "雜糧類", "raw_g": 70, "note": "◎", "unit": "g"}, {"group": "全榖雜糧類", "name": "冬粉", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 15, "portion": "1/2把", "note": "＊；乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "河粉", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 25, "note": "濕", "unit": "g"}, {"group": "全榖雜糧類", "name": "米粉", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 20, "note": "＊；乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "米粉", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 30, "portion": "1/2碗", "note": "＊；濕", "unit": "g"}, {"group": "全榖雜糧類", "name": "米苔目", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 50, "note": "＊；濕", "unit": "g"}, {"group": "全榖雜糧類", "name": "紅豆、綠豆、花豆", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 25, "portion": "2湯匙（乾）", "note": "◎", "unit": "g"}, {"group": "全榖雜糧類", "name": "芋圓、地瓜圓", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 30, "note": "冷凍", "unit": "g"}, {"group": "全榖雜糧類", "name": "藕粉", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 20, "portion": "3湯匙", "note": "＊", "unit": "g"}, {"group": "全榖雜糧類", "name": "蛋餅皮、蔥油餅皮", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 35, "note": "冷凍", "unit": "g"}, {"group": "全榖雜糧類", "name": "蠶豆、刀豆", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 20, "portion": "2湯匙（乾）", "note": "◎", "unit": "g"}, {"group": "全榖雜糧類", "name": "西谷米", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 15, "portion": "1 1/2湯匙", "note": "＊；粉圓", "unit": "g"}, {"group": "全榖雜糧類", "name": "越南春捲皮", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 20, "note": "乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "鷹嘴豆", "exchange": 1, "kcal": 70, "section": "高蛋白質乾豆類", "raw_g": 25, "portion": "2湯匙（乾）", "note": "◎", "unit": "g"}, {"group": "全榖雜糧類", "name": "吐司、全麥吐司", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "1/2~1/3片", "unit": "g"}, {"group": "全榖雜糧類", "name": "大麥、小麥、蕎麥", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "unit": "g"}, {"group": "全榖雜糧類", "name": "奶酥麵包", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "1/3個(小)", "note": "△；+1茶匙油", "unit": "g"}, {"group": "全榖雜糧類", "name": "山東饅頭", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "1/6個", "unit": "g"}, {"group": "全榖雜糧類", "name": "拉麵", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 25, "unit": "g"}, {"group": "全榖雜糧類", "name": "春捲皮", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "1 1/2張", "unit": "g"}, {"group": "全榖雜糧類", "name": "油麵", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 45, "portion": "1/2碗", "unit": "g"}, {"group": "全榖雜糧類", "name": "漢堡麵包", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 25, "portion": "1/2個", "unit": "g"}, {"group": "全榖雜糧類", "name": "義大利麵、全麥", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "note": "◎；乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "菠蘿麵包", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "1/3個(小)", "note": "△；+1茶匙油", "unit": "g"}, {"group": "全榖雜糧類", "name": "蘇打餅干", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "portion": "3片", "unit": "g"}, {"group": "全榖雜糧類", "name": "通心粉", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "portion": "1/3杯", "note": "◎；乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "鍋燒麵", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 60, "note": "熟", "unit": "g"}, {"group": "全榖雜糧類", "name": "餃子皮", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "3張", "unit": "g"}, {"group": "全榖雜糧類", "name": "餐包", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "1個(小)", "unit": "g"}, {"group": "全榖雜糧類", "name": "餛飩皮", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "3-7張", "unit": "g"}, {"group": "全榖雜糧類", "name": "饅頭", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "portion": "1/3個 (中)", "unit": "g"}, {"group": "全榖雜糧類", "name": "麥片", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "portion": "3湯匙", "unit": "g"}, {"group": "全榖雜糧類", "name": "麥粉", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "portion": "4湯匙", "unit": "g"}, {"group": "全榖雜糧類", "name": "麵條", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "note": "乾", "unit": "g"}, {"group": "全榖雜糧類", "name": "麵條", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 30, "note": "濕", "unit": "g"}, {"group": "全榖雜糧類", "name": "麵條", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 60, "portion": "1/2碗", "note": "熟", "unit": "g"}, {"group": "全榖雜糧類", "name": "麵粉", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 20, "portion": "3湯匙", "unit": "g"}, {"group": "全榖雜糧類", "name": "麵線", "exchange": 1, "kcal": 70, "section": "麥類", "raw_g": 25, "note": "乾", "unit": "g"}, {"group": "水果類", "name": "奇異果", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 125, "edible_g": 105, "portion": "1 1/2個", "note": "＊；6個/斤", "unit": "g"}, {"group": "水果類", "name": "山竹", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 420, "edible_g": 84, "portion": "5個", "note": "7個/斤", "unit": "g"}, {"group": "水果類", "name": "枇杷", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 230, "edible_g": 155, "unit": "g"}, {"group": "水果類", "name": "楊桃", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 180, "edible_g": 170, "portion": "3/4個", "note": "2個/斤", "unit": "g"}, {"group": "水果類", "name": "榴槤", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 130, "edible_g": 45, "portion": "1/4瓣", "unit": "g"}, {"group": "水果類", "name": "櫻桃", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 85, "edible_g": 80, "portion": "9個", "unit": "g"}, {"group": "水果類", "name": "火龍果", "exchange": 1, "kcal": 60, "section": "其他", "edible_g": 110, "unit": "g"}, {"group": "水果類", "name": "百香果", "exchange": 1, "kcal": 60, "section": "其他", "edible_g": 140, "portion": "2個", "note": "6個/斤", "unit": "g"}, {"group": "水果類", "name": "紅毛丹", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 150, "edible_g": 80, "unit": "g"}, {"group": "水果類", "name": "聖女蕃茄", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 220, "edible_g": 220, "portion": "23個", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "草莓", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 170, "edible_g": 160, "portion": "小16個", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "荔枝", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 185, "edible_g": 100, "portion": "9個", "note": "30個/斤", "unit": "g"}, {"group": "水果類", "name": "葡萄", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 105, "edible_g": 85, "portion": "13個", "unit": "g"}, {"group": "水果類", "name": "蓮霧", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 180, "edible_g": 165, "portion": "2個", "note": "6個/斤", "unit": "g"}, {"group": "水果類", "name": "釋迦", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 105, "edible_g": 60, "portion": "1/2個", "note": "＊；3個/斤", "unit": "g"}, {"group": "水果類", "name": "香蕉", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 95, "edible_g": 70, "portion": "大 1/2根 小一根", "note": "＊；3根/斤", "unit": "g"}, {"group": "水果類", "name": "鳳梨", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 205, "edible_g": 110, "portion": "1/10片", "note": "4斤/個", "unit": "g"}, {"group": "水果類", "name": "龍眼", "exchange": 1, "kcal": 60, "section": "其他", "buy_g": 130, "edible_g": 90, "portion": "13個", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "加州李", "exchange": 1, "kcal": 60, "section": "李類", "buy_g": 125, "edible_g": 120, "portion": "小1個", "note": "4 個/斤", "unit": "g"}, {"group": "水果類", "name": "李子", "exchange": 1, "kcal": 60, "section": "李類", "buy_g": 155, "edible_g": 145, "portion": "4個", "note": "14個/斤", "unit": "g"}, {"group": "水果類", "name": "黑棗梅", "exchange": 1, "kcal": 60, "section": "李類", "buy_g": 115, "edible_g": 110, "portion": "3個", "note": "12 個/斤", "unit": "g"}, {"group": "水果類", "name": "椰棗", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 20, "unit": "g"}, {"group": "水果類", "name": "無花果乾", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 20, "unit": "g"}, {"group": "水果類", "name": "芒果乾", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 20, "unit": "g"}, {"group": "水果類", "name": "芒果青", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 30, "unit": "g"}, {"group": "水果類", "name": "芭樂乾", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 20, "unit": "g"}, {"group": "水果類", "name": "葡萄乾", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 20, "unit": "g"}, {"group": "水果類", "name": "蔓越莓乾", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 20, "unit": "g"}, {"group": "水果類", "name": "鳳梨乾", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 20, "unit": "g"}, {"group": "水果類", "name": "黑棗梅", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 25, "unit": "g"}, {"group": "水果類", "name": "龍眼干", "exchange": 1, "kcal": 60, "section": "果乾類＃", "edible_g": 22, "note": "＊", "unit": "g"}, {"group": "水果類", "name": "柳丁", "exchange": 1, "kcal": 60, "section": "柑橘類", "buy_g": 170, "edible_g": 130, "portion": "1個", "note": "4個/斤", "unit": "g"}, {"group": "水果類", "name": "桶柑", "exchange": 1, "kcal": 60, "section": "柑橘類", "buy_g": 190, "edible_g": 155, "portion": "1個", "note": "海梨；4個/斤", "unit": "g"}, {"group": "水果類", "name": "椪柑", "exchange": 1, "kcal": 60, "section": "柑橘類", "buy_g": 190, "edible_g": 150, "portion": "1個", "note": "3個/斤", "unit": "g"}, {"group": "水果類", "name": "油柑", "exchange": 1, "kcal": 60, "section": "柑橘類", "buy_g": 120, "edible_g": 120, "portion": "6個", "note": "金棗；30個/斤", "unit": "g"}, {"group": "水果類", "name": "白柚", "exchange": 1, "kcal": 60, "section": "柑橘類", "buy_g": 270, "edible_g": 165, "portion": "2片", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "葡萄柚", "exchange": 1, "kcal": 60, "section": "柑橘類", "buy_g": 245, "edible_g": 165, "portion": "3/4個", "unit": "g"}, {"group": "水果類", "name": "香吉士", "exchange": 1, "kcal": 60, "section": "柑橘類", "buy_g": 185, "edible_g": 130, "portion": "1個", "unit": "g"}, {"group": "水果類", "name": "柿餅", "exchange": 1, "kcal": 60, "section": "柿類", "buy_g": 35, "edible_g": 33, "portion": "3/4個", "unit": "g"}, {"group": "水果類", "name": "紅柿", "exchange": 1, "kcal": 60, "section": "柿類", "buy_g": 105, "edible_g": 100, "portion": "3/4個", "note": "6個/斤", "unit": "g"}, {"group": "水果類", "name": "仙桃", "exchange": 1, "kcal": 60, "section": "桃類", "buy_g": 75, "edible_g": 50, "portion": "1個", "unit": "g"}, {"group": "水果類", "name": "桃子", "exchange": 1, "kcal": 60, "section": "桃類", "buy_g": 250, "edible_g": 220, "portion": "1個", "note": "＊＊", "unit": "g"}, {"group": "水果類", "name": "水蜜桃", "exchange": 1, "kcal": 60, "section": "桃類", "buy_g": 150, "edible_g": 145, "portion": "小1個", "note": "4 個/斤", "unit": "g"}, {"group": "水果類", "name": "玫瑰桃", "exchange": 1, "kcal": 60, "section": "桃類", "buy_g": 150, "edible_g": 145, "portion": "1個", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "水梨", "exchange": 1, "kcal": 60, "section": "梨類", "buy_g": 210, "edible_g": 145, "portion": "3/4個", "unit": "g"}, {"group": "水果類", "name": "粗梨", "exchange": 1, "kcal": 60, "section": "梨類", "buy_g": 140, "edible_g": 120, "portion": "小1個", "unit": "g"}, {"group": "水果類", "name": "西洋梨", "exchange": 1, "kcal": 60, "section": "梨類", "buy_g": 165, "edible_g": 105, "portion": "1個", "unit": "g"}, {"group": "水果類", "name": "紅棗", "exchange": 1, "kcal": 60, "section": "棗類", "buy_g": 30, "edible_g": 25, "portion": "10個", "unit": "g"}, {"group": "水果類", "name": "綠棗子", "exchange": 1, "kcal": 60, "section": "棗類", "buy_g": 140, "edible_g": 130, "portion": "2個", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "黑棗", "exchange": 1, "kcal": 60, "section": "棗類", "buy_g": 30, "edible_g": 25, "portion": "9個", "unit": "g"}, {"group": "水果類", "name": "哈密瓜", "exchange": 1, "kcal": 60, "section": "瓜類", "buy_g": 300, "edible_g": 150, "portion": "1/4個", "note": "＊＊", "unit": "g"}, {"group": "水果類", "name": "太陽瓜", "exchange": 1, "kcal": 60, "section": "瓜類", "buy_g": 240, "edible_g": 215, "portion": "2/3個", "note": "＊＊", "unit": "g"}, {"group": "水果類", "name": "新疆哈密瓜", "exchange": 1, "kcal": 60, "section": "瓜類", "buy_g": 290, "edible_g": 245, "portion": "2/5個", "note": "＊＊", "unit": "g"}, {"group": "水果類", "name": "木瓜", "exchange": 1, "kcal": 60, "section": "瓜類", "buy_g": 165, "edible_g": 150, "portion": "1/3個", "note": "＊；1個/斤", "unit": "g"}, {"group": "水果類", "name": "紅西瓜", "exchange": 1, "kcal": 60, "section": "瓜類", "buy_g": 320, "edible_g": 180, "portion": "1片", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "香瓜", "exchange": 1, "kcal": 60, "section": "瓜類", "buy_g": 245, "edible_g": 165, "portion": "2/3個", "note": "＊＊；美濃", "unit": "g"}, {"group": "水果類", "name": "黃西瓜", "exchange": 1, "kcal": 60, "section": "瓜類", "buy_g": 320, "edible_g": 195, "portion": "1/3個", "unit": "g"}, {"group": "水果類", "name": "愛文芒果", "exchange": 1, "kcal": 60, "section": "芒果類", "buy_g": 225, "edible_g": 150, "portion": "1 1/2片", "unit": "g"}, {"group": "水果類", "name": "金煌芒果", "exchange": 1, "kcal": 60, "section": "芒果類", "buy_g": 140, "edible_g": 105, "portion": "1片", "unit": "g"}, {"group": "水果類", "name": "土芭樂", "exchange": 1, "kcal": 60, "section": "芭樂類", "edible_g": 155, "portion": "1個", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "泰國芭樂", "exchange": 1, "kcal": 60, "section": "芭樂類", "edible_g": 160, "portion": "1/3個", "note": "＊；1個/斤", "unit": "g"}, {"group": "水果類", "name": "葫蘆芭樂", "exchange": 1, "kcal": 60, "section": "芭樂類", "edible_g": 155, "portion": "1個", "note": "＊", "unit": "g"}, {"group": "水果類", "name": "五爪蘋果", "exchange": 1, "kcal": 60, "section": "蘋果類", "buy_g": 140, "edible_g": 125, "portion": "小1個", "unit": "g"}, {"group": "水果類", "name": "富士蘋果", "exchange": 1, "kcal": 60, "section": "蘋果類", "buy_g": 145, "edible_g": 130, "portion": "小1個", "unit": "g"}, {"group": "水果類", "name": "青龍蘋果", "exchange": 1, "kcal": 60, "section": "蘋果類", "buy_g": 130, "edible_g": 115, "portion": "小1個", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "沙拉醬", "exchange": 1, "kcal": 45, "section": "其他", "buy_g": 10, "edible_g": 10, "portion": "2茶匙", "note": "法國式、義大利式", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "瑪琪琳、酥油", "exchange": 1, "kcal": 45, "section": "其他", "buy_g": 6, "edible_g": 6, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "花生醬", "exchange": 1, "kcal": 45, "section": "其他", "buy_g": 9, "edible_g": 9, "portion": "1茶匙", "note": "＊", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "蛋黃醬", "exchange": 1, "kcal": 45, "section": "其他", "buy_g": 8, "edible_g": 8, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "鮮奶油", "exchange": 1, "kcal": 45, "section": "其他", "buy_g": 13, "edible_g": 13, "portion": "1湯匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "奶油乳酪 (cream cheese", "exchange": 1, "kcal": 45, "section": "動物油", "buy_g": 12, "edible_g": 12, "portion": "2茶匙", "note": "＊", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "牛油", "exchange": 1, "kcal": 45, "section": "動物油", "buy_g": 6, "edible_g": 6, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "豬油", "exchange": 1, "kcal": 45, "section": "動物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "雞油", "exchange": 1, "kcal": 45, "section": "動物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "南瓜子、葵花子", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 12, "edible_g": 10, "portion": "1湯匙", "note": "＊", "protein_g": 2, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "各式花生仁", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 13, "edible_g": 13, "portion": "10粒", "note": "＊", "protein_g": 4, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "杏仁果", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 7, "edible_g": 7, "portion": "5粒", "note": "＊", "protein_g": 2, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "核桃仁", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 7, "edible_g": 7, "portion": "2粒", "note": "＊", "protein_g": 1, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "瓜子", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 20, "edible_g": 15, "portion": "1湯匙", "note": "＊", "protein_g": 4, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "腰果", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 10, "edible_g": 10, "portion": "5粒", "note": "＊", "protein_g": 2, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "花生粉", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 13, "edible_g": 13, "portion": "2湯匙", "protein_g": 4, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "開心果", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 15, "edible_g": 10, "portion": "15粒", "note": "＊", "protein_g": 2, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "黑芝麻", "exchange": 1, "kcal": 45, "section": "堅果類", "buy_g": 10, "edible_g": 10, "portion": "4茶匙", "note": "＊；白", "protein_g": 1, "unit": "g"}, {"group": "油脂與堅果種子類", "name": "大豆油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "棕櫚油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "椰奶", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 55, "edible_g": 55, "note": "+2公克碳水化合物", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "椰子油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "椰漿", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 30, "edible_g": 30, "note": "+1.5公克碳水化合物", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "橄欖油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "玉米油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "紅花子油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "芥花油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "花生油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "葵花子油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "油脂與堅果種子類", "name": "麻油", "exchange": 1, "kcal": 45, "section": "植物油", "buy_g": 5, "edible_g": 5, "portion": "1茶匙", "unit": "g"}, {"group": "蔬菜類", "name": "冬瓜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "包心白菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "半天筍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "地瓜葉", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "小白菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "小芹菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "小黃瓜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "山東白菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "川七", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "木耳", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "柳松菇", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "油菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "油菜花", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "洋菇", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "洋蔥", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "澎湖絲瓜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "牛蒡", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "猴頭菇", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "玉米筍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "球莖甘藍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "甘藍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "甜椒(青椒", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "番茄(大", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "番茄罐頭", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "番薯葉", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "白鳳菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "皇冠菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "空心菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "竹筍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "紅梗珍珠菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "紅莧菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "紅鳳菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "紫甘藍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "綠蘆筍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "綠豆芽", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "美國芹菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "翠玉白菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "胡瓜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "胡蘿蔔", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "芋莖", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "芥菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "芥蘭", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "芥蘭菜嬰", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "花椰菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "芹菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "苜蓿芽", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "苦瓜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "茄子", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "茭白筍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "茼蒿", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "草菇", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "荷蘭豆菜心", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "莧菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "菠菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "萵苣", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "萵苣葉", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "葫蘆瓜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "蒲瓜（扁蒲", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "蘿蔔", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "角菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "野苦瓜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "金針菇", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "金針菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "青江菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "韭菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "韭菜花", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "韭黃", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "香菇", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "高麗菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "高麗菜芽", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "鮮雪裡紅", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "鵝仔白菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "鵝菜心", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "麻竹筍", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "黃秋葵", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "黃豆芽", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "黑甜菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "蔬菜類", "name": "龍鬚菜", "exchange": 1, "kcal": 25, "cooked_g": 100, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬小腸", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "內臟", "raw_g": 55, "note": "◎◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬肚", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "內臟", "raw_g": 50, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬腦", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "內臟", "raw_g": 60, "note": "◎◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬舌", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "內臟", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞蛋", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "內臟", "raw_g": 55, "note": "◎◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "低脂培根", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "家畜", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬大排、豬小排", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "家畜", "raw_g": 35, "cooked_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬後腿肉、豬前腿肉、羊肉、豬腳", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "家畜", "raw_g": 35, "cooked_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬肉鬆  、肉脯", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "家畜", "raw_g": 20, "note": "＊；+5公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞爪", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "家禽", "raw_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞翅、雞排", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "家禽", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "鴨賞", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "家禽", "raw_g": 25, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "旗魚丸、魚丸", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "水產", "raw_g": 60, "note": "＊；包肉；+7公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "虱目魚、烏魚、肉鯽、鹹馧魚、鮭魚", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "水產", "raw_g": 35, "cooked_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "虱目魚丸、花枝丸", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "水產", "raw_g": 50, "note": "＊；+7公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "魚肉鬆", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "水產", "raw_g": 25, "note": "＊；+10 公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "鱈魚、比目魚", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "水產", "raw_g": 50, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "五香豆干", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "傳統豆腐", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 80, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "嫩豆腐", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 140, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "小方豆干", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "油豆腐", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 55, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "百頁結", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 50, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "素油雞", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 55, "note": "＊", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "素火腿", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 40, "note": "＊", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "素獅子頭", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 50, "note": "＊", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "素香鬆", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 25, "note": "＊", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豆枝", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 60, "note": "＊；+5公克油脂 +30公克碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豆豉", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "黃豆干", "exchange": 1, "kcal": 75, "subtype": "中脂", "section": "豆類 及其 製品", "raw_g": 70, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "牛肚", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 50, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "膽肝", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 20, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬心", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 45, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬肝", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 30, "cooked_g": 20, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬腎", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 45, "note": "◎◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬血", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 110, "note": "◎◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞肝", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 40, "cooked_g": 30, "note": "◎◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞肫", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 40, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞蛋白", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "內臟", "raw_g": 60, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "火腿 （+5 公克 碳水化合物）", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "家畜", "raw_g": 45, "note": "＊", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "牛肉干 （+5公克 碳水化合物）", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "家畜", "raw_g": 20, "note": "＊", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "牛腱", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "家畜", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬大里肌（瘦豬後腿肉）（瘦豬前腿肉）", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "家畜", "raw_g": 35, "cooked_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬肉干 （+5公克 碳水化合物）", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "家畜", "raw_g": 15, "note": "＊", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞腿", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "家禽", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞里肉、雞胸肉", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "家禽", "raw_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "一般魚類", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "小卷", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 35, "note": "◎◎；鹹", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "小魚干", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 10, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "文蛤", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 160, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "牡蠣", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 65, "cooked_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "白海參", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 100, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "白鯧", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "章魚", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 55, "note": "◎◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "花枝", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 60, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "蝦仁", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 50, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "蝦皮", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 20, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "蝦米", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 15, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "魚丸", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 55, "cooked_g": 55, "note": "＊；不包肉；+10公克碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "魚脯", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "鰹魚、鮪魚", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "水產(1)", "raw_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "干絲", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "毛豆", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 50, "note": "+5公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "無糖豆漿", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 190, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "臭豆腐", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 50, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豆包", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 30, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "麵丸", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "麵腸", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "黃豆", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 20, "note": "+5公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "黑豆", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 25, "note": "+10 公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "＃ 烤麩", "exchange": 1, "kcal": 55, "subtype": "低脂", "section": "豆類及 其製品", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "加工 製品", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "家畜", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "牛肉條", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "百頁豆腐", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 70, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "秋刀魚", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "素雞", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 40, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "素雞塊", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 50, "note": "＊；+7公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "素魚", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 35, "unit": "g"}, {"group": "豆魚蛋肉類", "name": "豬肉酥", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 20, "note": "＊；+5公克 碳水化合物", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "雞心", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 45, "note": "◎", "unit": "g"}, {"group": "豆魚蛋肉類", "name": "麵筋泡", "exchange": 1, "kcal": 120, "subtype": "高脂", "raw_g": 15, "unit": "g"}];
+
+    const GROUP_LABELS = [
+      "豆魚蛋肉類",
+      "乳品類",
+      "全榖雜糧類",
+      "蔬菜類",
+      "水果類",
+      "油脂與堅果種子類",
+    ];
+
+    const GROUP_COLUMNS = {
+      "豆魚蛋肉類": [
+        {key:"subtype", label:"子分類", fmt:v=>v||"—"},
+        {key:"section", label:"項目", fmt:v=>v||"—"},
+        {key:"name", label:"食物", fmt:v=>v},
+        {key:"cooked_g", label:"熟重(g)", fmt:v=>v ?? "—", right:true},
+        {key:"raw_g", label:"生重(g)", fmt:v=>v ?? "—", right:true},
+        {key:"kcal", label:"每份熱量(kcal)", fmt:v=>v, right:true},
+        {key:"note", label:"註記", fmt:v=>v||""},
+      ],
+      "乳品類": [
+        {key:"subtype", label:"子分類", fmt:v=>v||"—"},
+        {key:"name", label:"品名", fmt:v=>v},
+        {key:"portion", label:"份量", fmt:v=>v||"—"},
+        {key:"unit", label:"計量", fmt:v=>v||"—"},
+        {key:"kcal", label:"每份熱量(kcal)", fmt:v=>v, right:true},
+        {key:"note", label:"註記", fmt:v=>v||""},
+      ],
+      "全榖雜糧類": [
+        {key:"section", label:"項目", fmt:v=>v||"—"},
+        {key:"name", label:"食物", fmt:v=>v},
+        {key:"portion", label:"份量", fmt:v=>v||"—"},
+        {key:"raw_g", label:"可食重量(g)", fmt:v=>v ?? "—", right:true},
+        {key:"kcal", label:"每份熱量(kcal)", fmt:v=>v, right:true},
+        {key:"note", label:"註記", fmt:v=>v||""},
+      ],
+      "蔬菜類": [
+        {key:"name", label:"食物", fmt:v=>v},
+        {key:"cooked_g", label:"每份可食(g)", fmt:v=>v ?? 100, right:true},
+        {key:"kcal", label:"每份熱量(kcal)", fmt:v=>v, right:true},
+        {key:"note", label:"註記", fmt:v=>v||""},
+      ],
+      "水果類": [
+        {key:"section", label:"項目", fmt:v=>v||"—"},
+        {key:"name", label:"食物", fmt:v=>v},
+        {key:"portion", label:"份量", fmt:v=>v||"—"},
+        {key:"edible_g", label:"可食量(g)", fmt:v=>v ?? "—", right:true},
+        {key:"buy_g", label:"購買量(g)", fmt:v=>v ?? "—", right:true},
+        {key:"kcal", label:"每份熱量(kcal)", fmt:v=>v, right:true},
+        {key:"note", label:"註記", fmt:v=>v||""},
+      ],
+      "油脂與堅果種子類": [
+        {key:"section", label:"項目", fmt:v=>v||"—"},
+        {key:"name", label:"食物", fmt:v=>v},
+        {key:"portion", label:"份量", fmt:v=>v||"—"},
+        {key:"edible_g", label:"可食量(g)", fmt:v=>v ?? "—", right:true},
+        {key:"buy_g", label:"購買量(g)", fmt:v=>v ?? "—", right:true},
+        {key:"protein_g", label:"蛋白質(g)", fmt:v=>v ?? "—", right:true},
+        {key:"kcal", label:"每份熱量(kcal)", fmt:v=>v, right:true},
+        {key:"note", label:"註記", fmt:v=>v||""},
+      ],
+    };
+
+    const groupSel = document.getElementById("group");
+    const subtypeBox = document.getElementById("subtypeBox");
+    const subtypeSel = document.getElementById("subtype");
+    const qInput = document.getElementById("q");
+    const tbody = document.getElementById("tbody");
+    const theadRow = document.getElementById("theadRow");
+    const countEl = document.getElementById("count");
+    const chipsEl = document.getElementById("chips");
+    const clearBtn = document.getElementById("clearBtn");
+
+    const viewTableBtn = document.getElementById("viewTableBtn");
+    const viewCardsBtn = document.getElementById("viewCardsBtn");
+    const tableWrap = document.getElementById("tableWrap");
+    const cardsWrap = document.getElementById("cardsWrap");
+
+    function getDefaultView() {
+      // Default to cards on small screens
+      const saved = localStorage.getItem("fit21_exchange_view");
+      if (saved) return saved;
+      return window.matchMedia("(max-width: 640px)").matches ? "cards" : "table";
+    }
+
+    function setView(view) {
+      localStorage.setItem("fit21_exchange_view", view);
+      const isCards = view === "cards";
+      tableWrap.style.display = isCards ? "none" : "";
+      cardsWrap.style.display = isCards ? "" : "none";
+      viewTableBtn.setAttribute("aria-pressed", String(!isCards));
+      viewCardsBtn.setAttribute("aria-pressed", String(isCards));
+    }
+
+    function fmt(v) {
+      if (v == null || v === "") return "—";
+      return String(v);
+    }
+
+    function renderCards(rows, group) {
+      const wrap = document.createElement("div");
+      wrap.className = "cardsGrid";
+
+      rows.forEach(e => {
+        const card = document.createElement("div");
+        card.className = "cardItem";
+
+        const name = e.name || "";
+        const kcal = fmt(e.kcal);
+        const subtype = e.subtype && e.subtype !== "" ? e.subtype : "";
+        const section = e.section && e.section !== "" ? e.section : "";
+        const note = e.note && e.note !== "" ? e.note : "";
+
+        let lines = [];
+
+        if (group === "豆魚蛋肉類") {
+          lines.push(`熟重：${fmt(e.cooked_g)} g`);
+          lines.push(`生重：${fmt(e.raw_g)} g`);
+        } else if (group === "乳品類") {
+          lines.push(`份量：${fmt(e.portion)}`);
+          lines.push(`計量：${fmt(e.unit)}`);
+        } else if (group === "全榖雜糧類") {
+          lines.push(`份量：${fmt(e.portion)}`);
+          lines.push(`可食重量：${fmt(e.raw_g)} g`);
+        } else if (group === "蔬菜類") {
+          lines.push(`每份可食：${fmt(e.cooked_g)} g`);
+        } else if (group === "水果類") {
+          lines.push(`份量：${fmt(e.portion)}`);
+          lines.push(`可食量：${fmt(e.edible_g)} g`);
+          lines.push(`購買量：${fmt(e.buy_g)} g`);
+        } else if (group === "油脂與堅果種子類") {
+          lines.push(`份量：${fmt(e.portion)}`);
+          lines.push(`可食量：${fmt(e.edible_g)} g`);
+          lines.push(`購買量：${fmt(e.buy_g)} g`);
+          lines.push(`蛋白質：${fmt(e.protein_g)} g`);
+        }
+
+        const badges = [];
+        if (subtype) badges.push(`子分類：${subtype}`);
+        if (section) badges.push(`項目：${section}`);
+
+        card.innerHTML = `
+          <div class="cardTop">
+            <div class="cardName">${name}</div>
+            <div class="cardKcal">${kcal} kcal/份</div>
+          </div>
+          <div>
+            ${badges.map(b => `<span class="badge">${b}</span>`).join("")}
+          </div>
+          <div class="cardMeta">
+            ${lines.map(x => `<div>${x}</div>`).join("")}
+            ${note ? `<div style="margin-top:6px;"><span class="badge">註記</span> ${note}</div>` : ""}
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+
+      cardsWrap.innerHTML = "";
+      cardsWrap.appendChild(wrap);
+    }
+
+
+    function uniq(arr) {
+      return [...new Set(arr.filter(Boolean))];
+    }
+
+    function setGroupOptions() {
+      groupSel.innerHTML = GROUP_LABELS.map(g => `<option value="${g}">${g}</option>`).join("");
+    }
+
+    function buildSubtypeOptions(group) {
+      const subs = uniq(DATA.filter(x => x.group === group).map(x => x.subtype));
+      if (subs.length > 0) {
+        subtypeBox.style.display = "";
+        subtypeSel.innerHTML = [`<option value="__ALL__">全部</option>`]
+          .concat(subs.map(s => `<option value="${s}">${s}</option>`))
+          .join("");
+      } else {
+        subtypeBox.style.display = "none";
+        subtypeSel.innerHTML = "";
+      }
+    }
+
+    function setHeader(group) {
+      const cols = GROUP_COLUMNS[group] || [];
+      theadRow.innerHTML = cols.map(c => `<th class="${c.right ? "right" : ""}">${c.label}</th>`).join("");
+    }
+
+    function renderChips(group, subtype, q) {
+      const chips = [];
+      chips.push(`分類：${group}`);
+      if (subtype && subtype !== "__ALL__") chips.push(`子分類：${subtype}`);
+      if (q) chips.push(`搜尋：${q}`);
+      chipsEl.innerHTML = chips.map(t => `<span class="chip">${t}</span>`).join("");
+    }
+
+
+    // 同義字／別名（可自行擴充）
+    // 例：輸入「酪梨」也會同時搜尋「鱷梨」「牛油果」
+    const SYNONYMS = {
+      "酪梨": ["鱷梨", "牛油果", "avocado"],
+      "鱷梨": ["酪梨", "牛油果", "avocado"],
+      "牛油果": ["酪梨", "鱷梨", "avocado"],
+      "番茄": ["西紅柿", "蕃茄", "tomato"],
+      "蕃茄": ["番茄", "西紅柿", "tomato"],
+      "西紅柿": ["番茄", "蕃茄", "tomato"],
+      "地瓜": ["番薯", "甘藷", "蕃薯", "sweet potato"],
+      "番薯": ["地瓜", "甘藷", "蕃薯", "sweet potato"],
+      "甘藷": ["地瓜", "番薯", "蕃薯", "sweet potato"],
+      "馬鈴薯": ["土豆", "potato"],
+      "土豆": ["馬鈴薯", "potato"],
+      "花椰菜": ["花椰", "青花菜", "西蘭花", "broccoli"],
+      "青花菜": ["花椰菜", "西蘭花", "broccoli"],
+      "西蘭花": ["花椰菜", "青花菜", "broccoli"],
+      "玉米": ["粟米", "corn"],
+      "粟米": ["玉米", "corn"],
+      "優格": ["優酪乳", "優格乳", "yogurt"],
+      "優酪乳": ["優格", "yogurt"],
+      "奇異果": ["猕猴桃", "kiwi"],
+      "猕猴桃": ["奇異果", "kiwi"],
+      "鳳梨": ["菠蘿", "pineapple"],
+      "菠蘿": ["鳳梨", "pineapple"],
+      "青椒": ["甜椒", "彩椒", "bell pepper"],
+      "甜椒": ["青椒", "彩椒", "bell pepper"],
+      "彩椒": ["青椒", "甜椒", "bell pepper"],
+    };
+
+    function expandToken(token) {
+      const t = token.trim();
+      if (!t) return [];
+      const alts = new Set([t]);
+      if (SYNONYMS[t]) SYNONYMS[t].forEach(x => alts.add(x));
+      const t2 = t.replace(/\s+/g, "");
+      if (SYNONYMS[t2]) SYNONYMS[t2].forEach(x => alts.add(x));
+      return [...alts].filter(Boolean);
+    }
+
+    function matchQuery(name, q, extra="") {
+      if (!q) return true;
+      const hay = `${(name||"")} ${(extra||"")}`.toLowerCase();
+      const parts = q.toLowerCase().split(/\s+/).filter(Boolean);
+      // AND across tokens; OR within synonyms for each token
+      return parts.every(p => {
+        const alts = expandToken(p).map(x => String(x).toLowerCase());
+        return alts.some(a => hay.includes(a));
+      });
+    }
+
+    function preferredCooked(e) {
+      // 熟重優先；若沒有熟重就回到生重
+      if (e.cooked_g != null && e.cooked_g !== "") return e.cooked_g;
+      if (e.raw_g != null && e.raw_g !== "") return e.raw_g;
+      return null;
+    }
+
+    function normalizeForGroup(group, e) {
+      // 讓豆魚蛋肉的「熟重」欄位更一致（沒有就用生重補）
+      if (group === "豆魚蛋肉類") {
+        const cooked = preferredCooked(e);
+        return {
+          ...e,
+          cooked_g: cooked,
+        };
+      }
+      return e;
+    }
+
+    function render() {
+      const group = groupSel.value;
+      const subtype = subtypeSel.value || "__ALL__";
+      const q = qInput.value.trim();
+
+      setHeader(group);
+
+      let rows = DATA.filter(x => x.group === group);
+      if (subtype !== "__ALL__") rows = rows.filter(x => x.subtype === subtype);
+      rows = rows
+        .map(e => normalizeForGroup(group, e))
+        .filter(e => matchQuery(e.name, q, `${e.section||""} ${e.subtype||""}`));
+
+      // sort: section -> name
+      rows.sort((a,b) => {
+        const sa = (a.section||"");
+        const sb = (b.section||"");
+        if (sa !== sb) return sa.localeCompare(sb, "zh-Hant");
+        const na = (a.name||"");
+        const nb = (b.name||"");
+        return na.localeCompare(nb, "zh-Hant");
+      });
+
+      const cols = GROUP_COLUMNS[group] || [];
+      tbody.innerHTML = rows.map(e => {
+        const tds = cols.map(c => {
+          const v = c.fmt(e[c.key]);
+          return `<td class="${c.right ? "right" : ""}">${v === "" ? "<span class='muted'>—</span>" : v}</td>`;
+        }).join("");
+        return `<tr>${tds}</tr>`;
+      }).join("");
+
+      countEl.innerHTML = `顯示 <b>${rows.length}</b> 筆`;
+      renderChips(group, subtype, q);
+    }
+
+    // init
+    setGroupOptions();
+    buildSubtypeOptions(groupSel.value);
+    setHeader(groupSel.value);
+    renderChips(groupSel.value, "__ALL__", "");
+    render();
+
+    // init view
+    setView(getDefaultView());
+    viewTableBtn.addEventListener("click", () => setView("table"));
+    viewCardsBtn.addEventListener("click", () => setView("cards"));
+
+    groupSel.addEventListener("change", () => {
+      buildSubtypeOptions(groupSel.value);
+      render();
+    });
+    subtypeSel.addEventListener("change", render);
+    qInput.addEventListener("input", render);
+    clearBtn.addEventListener("click", () => {
+      qInput.value = "";
+      render();
+      qInput.focus();
+    });
+  </script>
+
+  <div class="watermark">內部培訓資料｜勿外傳</div>
+<div style="text-align:center; margin: 6px 0 14px; font-size:12px; color: #666;">程序製作人｜傅惠萍　｜　版本：v1.0（可選）｜Fit21 內部系統</div>
+</body>
+</html>
