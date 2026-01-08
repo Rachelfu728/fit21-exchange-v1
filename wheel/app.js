@@ -20,7 +20,7 @@ function applyLockIfSpun() {
   resultEl.textContent = `✅ 你已經轉過囉：${saved.prize}\n請把上次截圖傳給教練即可 🎁`;
 }
 
-// ✅ 直接沿用你原本放在 spin/assets 的圖片（不動原本代換表）
+// ✅ 直接沿用你原本放在 ../spin/assets 的圖片（不動原本代換表）
 const IMG_BASE = "../spin/assets/";
 
 const segments = [
@@ -177,4 +177,4 @@ spinBtn.addEventListener("click", spin);
 
 loadImages()
   .then(() => { drawWheel(); applyLockIfSpun(); })
-  .catch(() => { resultEl.textContent = "圖片載入失敗：請確認 spin/assets 裡的檔名是否正確。"; });
+  .catch(() => { resultEl.textContent = "圖片載入失敗：請確認 ../spin/assets裡的檔名是否正確。"; });
