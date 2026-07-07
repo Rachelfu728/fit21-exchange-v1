@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fit21 陪伴計畫｜陪你好好瘦一次</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#0F6E56;
+    --green-deep:#08382C;
+    --gold:#C9A86A;
+    --gold-soft:#E4D5B8;
+    --cream:#FBF6EC;
+    --ink:#3A372F;
+    --ink-soft:#78725F;
+    --white:#FFFFFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Noto Sans TC',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:2;
+    font-size:16px;
+    font-weight:400;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px;}
+  h1,h2,h3,.serif{font-family:'Noto Serif TC',serif;}
+
+  /* ================= Hero ================= */
+  .hero{
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(201,168,106,.18), transparent 60%),
+      linear-gradient(175deg, var(--green) 0%, var(--green-deep) 90%);
+    color:var(--cream);
+    min-height:88vh;
+    display:flex;
+    align-items:center;
+    text-align:center;
+    padding:90px 0;
+  }
+  .hero .brand{
+    font-family:'Noto Serif TC',serif;
+    font-size:15px;
+    letter-spacing:.6em;
+    text-indent:.6em;
+    color:var(--gold);
+    margin-bottom:40px;
+    font-weight:500;
+  }
+  .hero-rule{
+    width:1px;height:56px;
+    background:linear-gradient(var(--gold), transparent);
+    margin:0 auto 40px;
+  }
+  .hero h1{
+    font-size:52px;
+    font-weight:900;
+    letter-spacing:.14em;
+    line-height:1.6;
+    margin-bottom:30px;
+  }
+  .hero .sub{
+    font-family:'Noto Serif TC',serif;
+    font-size:19px;
+    color:var(--gold-soft);
+    letter-spacing:.4em;
+    text-indent:.4em;
+    margin-bottom:64px;
+    font-weight:500;
+  }
+  .nodes{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:9px;
+    max-width:460px;
+    margin:0 auto 18px;
+  }
+  .nodes .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:rgba(251,246,236,.35);
+  }
+  .nodes .star{
+    width:14px;height:14px;border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 5px rgba(201,168,106,.18);
+  }
+  .nodes-caption{
+    font-family:'Noto Serif TC',serif;
+    font-size:14px;
+    color:rgba(251,246,236,.72);
+    letter-spacing:.24em;
+    text-indent:.24em;
+  }
+
+  /* ================= Sections ================= */
+  section{padding:96px 0;}
+  .chapter{
+    font-family:'Noto Serif TC',serif;
+    font-size:15px;
+    letter-spacing:.5em;
+    color:var(--gold);
+    font-weight:600;
+    text-align:center;
+    margin-bottom:14px;
+  }
+  h2{
+    font-size:32px;
+    font-weight:700;
+    color:var(--green-deep);
+    text-align:center;
+    letter-spacing:.12em;
+    margin-bottom:26px;
+  }
+  .rule{
+    width:1px;height:44px;
+    background:linear-gradient(transparent, var(--gold), transparent);
+    margin:0 auto 44px;
+  }
+  p.lead{
+    text-align:center;
+    max-width:560px;
+    margin:0 auto 20px;
+    color:var(--ink);
+    font-size:16.5px;
+  }
+
+  /* ================= 這是什麼 ================= */
+  .pillars{
+    max-width:600px;
+    margin:52px auto 0;
+  }
+  .pillar{
+    display:flex;
+    align-items:baseline;
+    gap:24px;
+    padding:24px 6px;
+    border-bottom:1px solid rgba(201,168,106,.32);
+  }
+  .pillar:first-child{border-top:1px solid rgba(201,168,106,.32);}
+  .pillar .k{
+    font-family:'Noto Serif TC',serif;
+    flex-shrink:0;
+    width:96px;
+    font-size:16px;
+    font-weight:700;
+    color:var(--green);
+    letter-spacing:.12em;
+  }
+  .pillar .v{color:var(--ink);font-size:15.5px;line-height:1.9;}
+
+  /* ================= 六個月 ================= */
+  .dark{
+    background:
+      radial-gradient(ellipse 100% 60% at 50% 0%, rgba(201,168,106,.1), transparent 55%),
+      var(--green-deep);
+    color:var(--cream);
+  }
+  .dark h2{color:var(--cream);}
+  .dark p.lead{color:var(--gold-soft);}
+  .months{
+    max-width:620px;
+    margin:56px auto 0;
+  }
+  .month{
+    display:flex;
+    gap:30px;
+    align-items:flex-start;
+    padding:30px 4px;
+    border-bottom:1px solid rgba(201,168,106,.22);
+  }
+  .month:last-child{border-bottom:none;}
+  .month .num{
+    font-family:'Noto Serif TC',serif;
+    flex-shrink:0;
+    font-size:44px;
+    font-weight:400;
+    color:var(--gold);
+    line-height:1.15;
+    width:56px;
+    text-align:center;
+  }
+  .month .num small{
+    display:block;
+    font-size:11px;
+    letter-spacing:.3em;
+    text-indent:.3em;
+    color:rgba(201,168,106,.75);
+    margin-top:2px;
+  }
+  .month .phase{
+    font-size:12px;
+    letter-spacing:.28em;
+    color:var(--gold);
+    font-weight:500;
+    margin-bottom:4px;
+  }
+  .month h3{
+    font-size:21px;
+    font-weight:600;
+    letter-spacing:.1em;
+    color:var(--cream);
+    margin-bottom:6px;
+  }
+  .month p{
+    font-size:15px;
+    color:rgba(251,246,236,.78);
+    line-height:1.9;
+  }
+
+  /* ================= 18 解憂 ================= */
+  .worry-group{
+    max-width:620px;
+    margin:0 auto 56px;
+  }
+  .worry-group:last-child{margin-bottom:0;}
+  .worry-group .g-title{
+    font-family:'Noto Serif TC',serif;
+    text-align:center;
+    font-size:17px;
+    font-weight:700;
+    color:var(--green);
+    letter-spacing:.28em;
+    text-indent:.28em;
+    margin-bottom:8px;
+  }
+  .worry-group .g-sub{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--gold);
+    letter-spacing:.3em;
+    text-indent:.3em;
+    margin-bottom:26px;
+  }
+  .worry{
+    display:flex;
+    gap:22px;
+    align-items:baseline;
+    padding:15px 8px;
+    border-bottom:1px solid rgba(201,168,106,.26);
+  }
+  .worry:last-child{border-bottom:none;}
+  .worry .no{
+    font-family:'Noto Serif TC',serif;
+    flex-shrink:0;
+    font-size:15px;
+    color:var(--gold);
+    font-weight:600;
+    width:34px;
+    letter-spacing:.05em;
+  }
+  .worry .q{font-size:16px;letter-spacing:.04em;}
+
+  /* ================= 每週 ================= */
+  .weekly{
+    max-width:640px;
+    margin:56px auto 0;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+  }
+  .w-step{
+    text-align:center;
+    padding:10px 22px;
+    position:relative;
+  }
+  .w-step + .w-step::before{
+    content:"";
+    position:absolute;left:0;top:12%;bottom:12%;
+    width:1px;
+    background:rgba(201,168,106,.4);
+  }
+  .w-step .zh{
+    font-family:'Noto Serif TC',serif;
+    font-size:30px;
+    color:var(--gold);
+    font-weight:500;
+    display:block;
+    margin-bottom:14px;
+  }
+  .w-step b{
+    display:block;
+    font-family:'Noto Serif TC',serif;
+    font-size:17px;
+    color:var(--green-deep);
+    letter-spacing:.1em;
+    margin-bottom:8px;
+    font-weight:700;
+  }
+  .w-step span{
+    font-size:14px;
+    color:var(--ink-soft);
+    line-height:1.9;
+    display:block;
+  }
+  .rhythm{
+    max-width:560px;
+    margin:52px auto 0;
+    text-align:center;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    letter-spacing:.06em;
+    padding-top:28px;
+    border-top:1px solid rgba(201,168,106,.32);
+  }
+
+  /* ================= 3 次成果 ================= */
+  .reviews{
+    max-width:620px;
+    margin:56px auto 0;
+  }
+  .review{
+    display:flex;
+    gap:34px;
+    align-items:flex-start;
+    padding:34px 4px;
+    border-bottom:1px solid rgba(201,168,106,.26);
+  }
+  .review:last-child{border-bottom:none;}
+  .review .zh{
+    font-family:'Noto Serif TC',serif;
+    flex-shrink:0;
+    font-size:46px;
+    color:var(--gold);
+    font-weight:400;
+    line-height:1.2;
+    width:56px;
+    text-align:center;
+  }
+  .review .when{
+    font-size:12.5px;
+    color:var(--gold);
+    letter-spacing:.26em;
+    margin-bottom:4px;
+    font-weight:500;
+  }
+  .review h3{
+    font-size:20px;
+    font-weight:600;
+    color:var(--green-deep);
+    letter-spacing:.08em;
+    margin-bottom:6px;
+  }
+  .review p{font-size:15px;color:var(--ink-soft);line-height:1.9;}
+
+  /* ================= 獎勵 ================= */
+  .rewards{
+    max-width:600px;
+    margin:56px auto 0;
+  }
+  .reward{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:20px;
+    padding:18px 8px;
+    border-bottom:1px solid rgba(201,168,106,.26);
+  }
+  .reward:first-child{border-top:1px solid rgba(201,168,106,.26);}
+  .reward .cond{font-size:15.5px;color:var(--ink);}
+  .reward .prize{
+    font-family:'Noto Serif TC',serif;
+    flex-shrink:0;
+    font-size:15.5px;
+    font-weight:600;
+    color:var(--green);
+    letter-spacing:.06em;
+    text-align:right;
+  }
+
+  /* ================= CTA ================= */
+  .cta{
+    background:
+      radial-gradient(ellipse 120% 90% at 50% 110%, rgba(201,168,106,.16), transparent 60%),
+      linear-gradient(175deg, var(--green-deep) 0%, var(--green) 130%);
+    color:var(--cream);
+    text-align:center;
+    padding:110px 0;
+  }
+  .cta .chapter{margin-bottom:14px;}
+  .cta h2{color:var(--cream);margin-bottom:24px;}
+  .cta p{
+    max-width:460px;
+    margin:0 auto 44px;
+    color:var(--gold-soft);
+    font-size:15.5px;
+    line-height:2.1;
+  }
+  .cta .btn{
+    display:inline-block;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    background:transparent;
+    font-family:'Noto Serif TC',serif;
+    font-weight:600;
+    font-size:16px;
+    letter-spacing:.3em;
+    text-indent:.3em;
+    padding:16px 52px;
+    text-decoration:none;
+    transition:background .3s,color .3s;
+  }
+  .cta .btn:hover{background:var(--gold);color:var(--green-deep);}
+  .cta .note{margin-top:22px;font-size:13px;color:rgba(251,246,236,.6);letter-spacing:.08em;}
+
+  footer{
+    text-align:center;
+    padding:44px 28px 56px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    letter-spacing:.12em;
+    line-height:2.2;
+  }
+  footer .name{
+    font-family:'Noto Serif TC',serif;
+    color:var(--green-deep);
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.3em;
+    text-indent:.3em;
+  }
+
+  @media (max-width:560px){
+    .hero h1{font-size:36px;letter-spacing:.1em;}
+    .hero .sub{font-size:16px;letter-spacing:.28em;}
+    h2{font-size:25px;}
+    section{padding:72px 0;}
+    .weekly{grid-template-columns:1fr;gap:8px;}
+    .w-step{padding:24px 10px;}
+    .w-step + .w-step::before{
+      left:20%;right:20%;top:0;bottom:auto;
+      width:auto;height:1px;
+    }
+    .month{gap:20px;}
+    .review{gap:22px;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    section .wrap, .hero .wrap{animation:rise .8s ease both;}
+    @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="wrap">
+    <div class="brand">FIT21 陪伴計畫</div>
+    <div class="hero-rule"></div>
+    <h1>陪你好好<br>瘦一次</h1>
+    <div class="sub">六個月・18 個解憂・3 次成果</div>
+    <div class="nodes">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="star"></span>
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="star"></span>
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="star"></span>
+    </div>
+    <div class="nodes-caption">十八個解憂，三次成果，二十一次陪伴</div>
+  </div>
+</div>
+
+<!-- 壹・這是什麼 -->
+<section>
+  <div class="wrap">
+    <div class="chapter">壹</div>
+    <h2>這是一個什麼樣的計畫</h2>
+    <div class="rule"></div>
+    <p class="lead">減重最難的，從來不是開始，是撐過那些卡關的日子。</p>
+    <p class="lead">Fit21 用六個月的時間，每週陪你解開一個瘦不下來的日常困擾。</p>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="k">專業帶領</div>
+        <div class="v">由甲級體重管理師規劃，將近三十年的實務經驗</div>
+      </div>
+      <div class="pillar">
+        <div class="k">輕鬆可行</div>
+        <div class="v">每週只有一個小任務，簡單、做得到，不會變成壓力</div>
+      </div>
+      <div class="pillar">
+        <div class="k">好好吃飯</div>
+        <div class="v">不斷食、不吃苦，從把飯吃對開始調整</div>
+      </div>
+      <div class="pillar">
+        <div class="k">一次到位</div>
+        <div class="v">目標不只是瘦下來，是瘦完之後，回不去</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 貳・六個月 -->
+<section class="dark">
+  <div class="wrap">
+    <div class="chapter">貳</div>
+    <h2>六個月，怎麼走</h2>
+    <div class="rule"></div>
+    <p class="lead">三個階段，一步一步，走成不會回頭的路。</p>
+    <div class="months">
+      <div class="month">
+        <div class="num">1<small>月</small></div>
+        <div>
+          <div class="phase">啟動期</div>
+          <h3>減重觀念</h3>
+          <p>先搞懂為什麼一直瘦不下來，把觀念調對，路才走得穩。</p>
+        </div>
+      </div>
+      <div class="month">
+        <div class="num">2<small>月</small></div>
+        <div>
+          <div class="phase">啟動期</div>
+          <h3>飲食解憂</h3>
+          <p>外食、嘴饞、晚吃——日常最常遇到的吃法問題，都有解法。</p>
+        </div>
+      </div>
+      <div class="month">
+        <div class="num">3<small>月</small></div>
+        <div>
+          <div class="phase">突破期</div>
+          <h3>運動紓壓</h3>
+          <p>不愛運動也沒關係，讓身體動起來、也鬆下來。</p>
+        </div>
+      </div>
+      <div class="month">
+        <div class="num">4<small>月</small></div>
+        <div>
+          <div class="phase">突破期</div>
+          <h3>美容自信</h3>
+          <p>瘦要瘦得漂亮——氣色、皮膚、每天兩分鐘的臉瑜珈小儀式。</p>
+        </div>
+      </div>
+      <div class="month">
+        <div class="num">5<small>月</small></div>
+        <div>
+          <div class="phase">維持期</div>
+          <h3>情緒解憂</h3>
+          <p>處理壓力、嘴饞和平台期，把決定權從情緒手上拿回來。</p>
+        </div>
+      </div>
+      <div class="month">
+        <div class="num">6<small>月</small></div>
+        <div>
+          <div class="phase">維持期</div>
+          <h3>維持成果</h3>
+          <p>聚餐不失控、體重不反彈，把這六個月變成一輩子的生活方式。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 參・18 解憂 -->
+<section>
+  <div class="wrap">
+    <div class="chapter">參</div>
+    <h2>十八個解憂，每週解開一個</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:64px;">這些困擾，你一定遇過其中幾個——</p>
+
+    <div class="worry-group">
+      <div class="g-title">減重觀念</div>
+      <div class="g-sub">第 一 月</div>
+      <div class="worry"><div class="no">01</div><div class="q">我明明有少吃，為什麼還不瘦？</div></div>
+      <div class="worry"><div class="no">02</div><div class="q">體重沒掉，是不是就代表失敗？</div></div>
+      <div class="worry"><div class="no">03</div><div class="q">早餐亂吃，真的會影響一整天嗎？</div></div>
+    </div>
+
+    <div class="worry-group">
+      <div class="g-title">飲食解憂</div>
+      <div class="g-sub">第 二 月</div>
+      <div class="worry"><div class="no">04</div><div class="q">每天吃便當，真的還能瘦嗎？</div></div>
+      <div class="worry"><div class="no">05</div><div class="q">下午嘴饞，是真的餓還是習慣？</div></div>
+      <div class="worry"><div class="no">06</div><div class="q">晚餐吃太晚，該怎麼補救？</div></div>
+    </div>
+
+    <div class="worry-group">
+      <div class="g-title">運動紓壓</div>
+      <div class="g-sub">第 三 月</div>
+      <div class="worry"><div class="no">07</div><div class="q">我不愛運動，也能開始變健康嗎？</div></div>
+      <div class="worry"><div class="no">08</div><div class="q">肩頸緊、身體累，是不是也會影響狀態？</div></div>
+      <div class="worry"><div class="no">09</div><div class="q">太極和慢動作，為什麼適合熟齡身體？</div></div>
+    </div>
+
+    <div class="worry-group">
+      <div class="g-title">美容自信</div>
+      <div class="g-sub">第 四 月</div>
+      <div class="worry"><div class="no">10</div><div class="q">瘦下來，為什麼氣色不一定變好？</div></div>
+      <div class="worry"><div class="no">11</div><div class="q">皮膚保養到底要先做哪三件事？</div></div>
+      <div class="worry"><div class="no">12</div><div class="q">臉瑜珈可以怎麼變成每天的小儀式？</div></div>
+    </div>
+
+    <div class="worry-group">
+      <div class="g-title">情緒解憂</div>
+      <div class="g-sub">第 五 月</div>
+      <div class="worry"><div class="no">13</div><div class="q">明明吃飽了，為什麼還想再吃？</div></div>
+      <div class="worry"><div class="no">14</div><div class="q">壓力一來就想吃甜的，怎麼辦？</div></div>
+      <div class="worry"><div class="no">15</div><div class="q">卡關時，到底要調整什麼？</div></div>
+    </div>
+
+    <div class="worry-group">
+      <div class="g-title">維持成果</div>
+      <div class="g-sub">第 六 月</div>
+      <div class="worry"><div class="no">16</div><div class="q">聚餐、週末、旅行怎麼不失控？</div></div>
+      <div class="worry"><div class="no">17</div><div class="q">瘦下來後，怎麼不要又回去？</div></div>
+      <div class="worry"><div class="no">18</div><div class="q">這六個月，我到底改變了什麼？</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 肆・每週 -->
+<section style="background:var(--white);">
+  <div class="wrap">
+    <div class="chapter">肆</div>
+    <h2>每一週，只做三件事</h2>
+    <div class="rule"></div>
+    <div class="weekly">
+      <div class="w-step">
+        <span class="zh">聽</span>
+        <b>一段解憂語音</b>
+        <span>3～5 分鐘，把這週的困擾講清楚，通勤、做家事時聽剛剛好。</span>
+      </div>
+      <div class="w-step">
+        <span class="zh">做</span>
+        <b>一個小任務</b>
+        <span>簡單、做得到，拍照或幾句話回報，就完成打卡。</span>
+      </div>
+      <div class="w-step">
+        <span class="zh">收</span>
+        <b>教練的回應</b>
+        <span>每一次打卡都有人看、有人回，你不是一個人在努力。</span>
+      </div>
+    </div>
+    <div class="rhythm">
+      每月節奏：前三週各一個解憂主題，第四週一起回顧、補課、量測，然後預告下個月。
+    </div>
+  </div>
+</section>
+
+<!-- 伍・3 次成果 -->
+<section>
+  <div class="wrap">
+    <div class="chapter">伍</div>
+    <h2>三次成果，親眼看見改變</h2>
+    <div class="rule"></div>
+    <div class="reviews">
+      <div class="review">
+        <div class="zh">壹</div>
+        <div>
+          <div class="when">第 二 個 月 結 束</div>
+          <h3>第一次身體回顧</h3>
+          <p>量測對照起點數據，看見初步的改變，帶著信心進入下一階段。</p>
+        </div>
+      </div>
+      <div class="review">
+        <div class="zh">貳</div>
+        <div>
+          <div class="when">第 四 個 月 結 束</div>
+          <h3>第二次生活回顧</h3>
+          <p>這時候改變的不只數字——氣色、精神、習慣，身邊的人會先發現。</p>
+        </div>
+      </div>
+      <div class="review">
+        <div class="zh">參</div>
+        <div>
+          <div class="when">第 六 個 月 結 束</div>
+          <h3>六個月成果總結</h3>
+          <p>完整數據對照、前後照片，以及一份屬於你自己的維持計畫。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 陸・獎勵 -->
+<section style="background:var(--white);">
+  <div class="wrap">
+    <div class="chapter">陸</div>
+    <h2>一路上的小獎勵</h2>
+    <div class="rule"></div>
+    <div class="rewards">
+      <div class="reward">
+        <div class="cond">完成本月 3 次打卡</div>
+        <div class="prize">本月完成獎</div>
+      </div>
+      <div class="reward">
+        <div class="cond">連續 2 個月完成</div>
+        <div class="prize">穩定進步獎</div>
+      </div>
+      <div class="reward">
+        <div class="cond">出席第 2、4 月成果回顧</div>
+        <div class="prize">成果回顧獎</div>
+      </div>
+      <div class="reward">
+        <div class="cond">完成六個月全程</div>
+        <div class="prize">Fit21 完賽獎<br><span style="font-weight:400;font-size:13px;color:var(--ink-soft);">證書＋前後對比紀念冊</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="wrap">
+    <div class="chapter">啟程</div>
+    <h2>從一次免費檢測開始</h2>
+    <p>先花 20 分鐘做一次身體組成檢測，看清楚自己的起點，再決定要不要出發。檢測不綁定任何方案，數據是你的。</p>
+    <a class="btn" href="https://line.me/ti/p/GW-kVsWSrP">預約免費檢測</a>
+    <div class="note">按下按鈕會開啟 LINE，加入好友後傳一句「我要預約檢測」即可</div>
+  </div>
+</div>
+
+<footer>
+  <div class="name">遇見喜樂營養俱樂部</div>
+  台中北區｜甲級體重管理師 傅惠萍 Rachel<br>
+  fit21coach.com
+</footer>
+
+</body>
+</html>
